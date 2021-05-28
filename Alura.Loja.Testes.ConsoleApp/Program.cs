@@ -12,31 +12,51 @@ namespace Alura.Loja.Testes.ConsoleApp
         {
             //GravarUsandoAdoNet();
             //GravarUsandoEntity();
+            //RecuperarProdutos();
+            //ExcluirProdutos();
             RecuperarProdutos();
-            ExcluirProdutos();
-            RecuperarProdutos();
-            
+            AtualizarProduto();
+
             Console.ReadKey();
+        }
+
+        private static void AtualizarProduto()
+        {
+            //GravarUsandoEntity();
+            RecuperarProdutos();
+
+            using (var repo = new ProdutoDAOEntity())
+            {
+                var produto = repo.Produtos();
+                foreach (var item in produto)
+                {
+
+                    item.Nome = "Harry Potter - Ordem da Fênix - Editado 2";
+                    repo.Atualizar(item);
+                }
+
+            }
+
         }
 
         private static void ExcluirProdutos()
         {
-            using (var repo = new LojaContext())
+            using (var repo = new ProdutoDAOEntity())
             {
-                IList<Produto> produtos = repo.Produtos.ToList();
+                IList<Produto> produtos = repo.Produtos();
                 foreach (var produto in produtos)
                 {
-                    repo.Remove(produto);
+                    repo.Remover(produto);
                 }
-                repo.SaveChanges();
+
             }
         }
 
         private static void RecuperarProdutos()
         {
-            using (var repo = new LojaContext())
+            using (var repo = new ProdutoDAOEntity())
             {
-                IList<Produto> produtos = repo.Produtos.ToList();
+                IList<Produto> produtos = repo.Produtos();
                 Console.WriteLine($"Foram encontrado(s) {produtos.Count} produtos\n");
                 foreach (var item in produtos)
                 {
@@ -54,10 +74,10 @@ namespace Alura.Loja.Testes.ConsoleApp
             p.Categoria = "Livros";
             p.Preco = 19.89;
 
-            using (var contexto = new LojaContext())
+            using (var contexto = new ProdutoDAOEntity())
             {
-                contexto.Produtos.Add(p);
-                contexto.SaveChanges();
+                contexto.Adicionar(p);
+
             }
         }
 
