@@ -9,7 +9,7 @@
 
         public override string ToString()
         {
-            return $"{Id} - {Nome} - {Categoria} - {Preco}";
+            return $"{Id} - {Nome.PadRight(40)}{Categoria.PadRight(20)}{Preco}";
         }
     }
 }

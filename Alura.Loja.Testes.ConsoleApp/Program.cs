@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,88 +14,64 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
-            //GravarUsandoAdoNet();
-            //GravarUsandoEntity();
-            //RecuperarProdutos();
-            //ExcluirProdutos();
-            RecuperarProdutos();
-            AtualizarProduto();
+            using (var contexto = new LojaContext())
+            {
+                var entries = contexto.ChangeTracker.Entries();
+                var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                loggerFactory.AddProvider(SqlLoggerProvider.Create());
+                loggerFactory.AddProvider(SqlLoggerProvider.Create());
+
+                var produtos = contexto.Produtos.ToList();
+
+                //Exibir(produtos);
+
+                ExibirEntries(entries);
+
+                var p1 = produtos.First();
+                //p1.Nome = "Harry Potter 2";
+                var novoProduto = new Produto();
+                novoProduto.Nome = "Salgadinho";
+                novoProduto.Categoria = "Alimento";
+                novoProduto.Preco = 5.99;
+                contexto.Produtos.Add(novoProduto);
+                ExibirEntries(entries);
+                var entry = contexto.Entry(novoProduto);
+                contexto.Produtos.Remove(novoProduto);
+                Console.WriteLine("\n\n"+entry.Entity.ToString() + " - " + entry.State);
+
+
+
+                //contexto.SaveChanges();
+                ExibirEntries(entries);
+                //Exibir(produtos);
+
+
+            }
 
             Console.ReadKey();
         }
 
-        private static void AtualizarProduto()
+        private static void ExibirEntries(IEnumerable<EntityEntry> entries)
         {
-            //GravarUsandoEntity();
-            RecuperarProdutos();
-
-            using (var repo = new ProdutoDAOEntity())
+            Console.WriteLine("======================================================================================");
+            foreach (var entrie in entries)
             {
-                var produto = repo.Produtos();
-                foreach (var item in produto)
-                {
-
-                    item.Nome = "Harry Potter - Ordem da Fênix - Editado 2";
-                    repo.Atualizar(item);
-                }
-
-            }
-
-        }
-
-        private static void ExcluirProdutos()
-        {
-            using (var repo = new ProdutoDAOEntity())
-            {
-                IList<Produto> produtos = repo.Produtos();
-                foreach (var produto in produtos)
-                {
-                    repo.Remover(produto);
-                }
-
+                Console.WriteLine($"{entrie.Entity.ToString()} - {entrie.State}");
+                
             }
         }
 
-        private static void RecuperarProdutos()
+        private static void Exibir<T>(IEnumerable<T> produtos)
         {
-            using (var repo = new ProdutoDAOEntity())
+            Console.WriteLine("======================================================================================");
+            foreach (var item in produtos)
             {
-                IList<Produto> produtos = repo.Produtos();
-                Console.WriteLine($"Foram encontrado(s) {produtos.Count} produtos\n");
-                foreach (var item in produtos)
-                {
-                    Console.WriteLine(item);
-                }
-                Console.WriteLine("\nFim da lista");
-
+                Console.WriteLine(item);
             }
         }
 
-        private static void GravarUsandoEntity()
-        {
-            Produto p = new Produto();
-            p.Nome = "Harry Potter e a Ordem da Fênix";
-            p.Categoria = "Livros";
-            p.Preco = 19.89;
-
-            using (var contexto = new ProdutoDAOEntity())
-            {
-                contexto.Adicionar(p);
-
-            }
-        }
-
-        private static void GravarUsandoAdoNet()
-        {
-            Produto p = new Produto();
-            p.Nome = "Harry Potter e a Ordem da Fênix";
-            p.Categoria = "Livros";
-            p.Preco = 19.89;
-
-            using (var repo = new ProdutoDAO())
-            {
-                repo.Adicionar(p);
-            }
-        }
+        
     }
 }
