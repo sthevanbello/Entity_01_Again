@@ -7,6 +7,7 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         //Informar aqui quais classes serão persistidas no banco
         public DbSet<Produto> Produtos { get; set; } 
+        public DbSet<Compra> Compras { get; set; } 
 
 
 

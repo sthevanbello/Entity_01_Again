@@ -14,40 +14,70 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
+            #region ChangeTracker
+            //using (var contexto = new LojaContext())
+            //{
+            //    var entries = contexto.ChangeTracker.Entries();
+            //    var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+            //    var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+            //    loggerFactory.AddProvider(SqlLoggerProvider.Create());
+            //    loggerFactory.AddProvider(SqlLoggerProvider.Create());
+
+            //    var produtos = contexto.Produtos.ToList();
+
+            //    //Exibir(produtos);
+
+            //    ExibirEntries(entries);
+
+            //    var p1 = produtos.First();
+            //    //p1.Nome = "Harry Potter 2";
+            //    var novoProduto = new Produto();
+            //    novoProduto.Nome = "Salgadinho";
+            //    novoProduto.Categoria = "Alimento";
+            //    novoProduto.Preco = 5.99;
+            //    contexto.Produtos.Add(novoProduto);
+            //    ExibirEntries(entries);
+            //    var entry = contexto.Entry(novoProduto);
+            //    contexto.Produtos.Remove(novoProduto);
+            //    Console.WriteLine("\n\n"+entry.Entity.ToString() + " - " + entry.State);
+
+
+
+            //    //contexto.SaveChanges();
+            //    ExibirEntries(entries);
+            //    //Exibir(produtos);
+
+
+            //}
+            #endregion
+
+            // Compra de 6 pães franceses
+
+            Produto pao = new Produto()
+            {
+                Nome = "Pão Frances",
+                Categoria = "Padaria",
+                PrecoUnitario = 0.40,
+                Unidade = "Unidade"
+            };
+
+            Compra compra = new Compra();
+            compra.Quantidade = 6;
+            compra.Produto = pao;
+            compra.Preco = compra.Quantidade * pao.PrecoUnitario;
+
             using (var contexto = new LojaContext())
             {
                 var entries = contexto.ChangeTracker.Entries();
                 var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
                 var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-
-                loggerFactory.AddProvider(SqlLoggerProvider.Create());
                 loggerFactory.AddProvider(SqlLoggerProvider.Create());
 
-                var produtos = contexto.Produtos.ToList();
-
-                //Exibir(produtos);
-
+                //contexto.Produtos.Add(pao);
+                contexto.Compras.Add(compra);
                 ExibirEntries(entries);
-
-                var p1 = produtos.First();
-                //p1.Nome = "Harry Potter 2";
-                var novoProduto = new Produto();
-                novoProduto.Nome = "Salgadinho";
-                novoProduto.Categoria = "Alimento";
-                novoProduto.Preco = 5.99;
-                contexto.Produtos.Add(novoProduto);
-                ExibirEntries(entries);
-                var entry = contexto.Entry(novoProduto);
-                contexto.Produtos.Remove(novoProduto);
-                Console.WriteLine("\n\n"+entry.Entity.ToString() + " - " + entry.State);
-
-
-
-                //contexto.SaveChanges();
-                ExibirEntries(entries);
-                //Exibir(produtos);
-
-
+                contexto.SaveChanges();
             }
 
             Console.ReadKey();
@@ -59,7 +89,7 @@ namespace Alura.Loja.Testes.ConsoleApp
             foreach (var entrie in entries)
             {
                 Console.WriteLine($"{entrie.Entity.ToString()} - {entrie.State}");
-                
+
             }
         }
 
