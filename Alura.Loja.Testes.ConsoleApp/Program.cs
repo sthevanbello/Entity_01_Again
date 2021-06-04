@@ -52,20 +52,43 @@ namespace Alura.Loja.Testes.ConsoleApp
             //}
             #endregion
 
+            #region um para muitos
             // Compra de 6 pães franceses
 
-            Produto pao = new Produto()
-            {
-                Nome = "Pão Frances",
-                Categoria = "Padaria",
-                PrecoUnitario = 0.40,
-                Unidade = "Unidade"
-            };
+            //Produto pao = new Produto()
+            //{
+            //    Nome = "Pão Frances",
+            //    Categoria = "Padaria",
+            //    PrecoUnitario = 0.40,
+            //    Unidade = "Unidade"
+            //};
 
-            Compra compra = new Compra();
-            compra.Quantidade = 6;
-            compra.Produto = pao;
-            compra.Preco = compra.Quantidade * pao.PrecoUnitario;
+            //Compra compra = new Compra();
+            //compra.Quantidade = 6;
+            //compra.Produto = pao;
+            //compra.Preco = compra.Quantidade * pao.PrecoUnitario;
+            //using (var contexto = new LojaContext())
+            //{
+            //    var entries = contexto.ChangeTracker.Entries();
+            //    var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+            //    var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+            //    loggerFactory.AddProvider(SqlLoggerProvider.Create());
+
+            //    //contexto.Produtos.Add(pao);
+            //    contexto.Compras.Add(compra);
+            //    ExibirEntries(entries);
+            //    contexto.SaveChanges();
+            //}
+            #endregion
+
+            var promocaoDePascoa = new Promocao();
+            promocaoDePascoa.Descricao = "Páscoa feliz";
+            promocaoDePascoa.DataInicio = DateTime.Now;
+            promocaoDePascoa.DataFim = DateTime.Now.AddMonths(3);
+
+            promocaoDePascoa.Produtos.Add(new PromocaoProduto());
+            promocaoDePascoa.Produtos.Add(new PromocaoProduto());
+            promocaoDePascoa.Produtos.Add(new PromocaoProduto());
 
             using (var contexto = new LojaContext())
             {
@@ -74,10 +97,7 @@ namespace Alura.Loja.Testes.ConsoleApp
                 var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
                 loggerFactory.AddProvider(SqlLoggerProvider.Create());
 
-                //contexto.Produtos.Add(pao);
-                contexto.Compras.Add(compra);
-                ExibirEntries(entries);
-                contexto.SaveChanges();
+                
             }
 
             Console.ReadKey();
