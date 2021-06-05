@@ -153,7 +153,33 @@ namespace Alura.Loja.Testes.ConsoleApp
 
             //ExibePromocao();
 
+            using (var contexto = new LojaContext())
+            {
+                var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create());
 
+                var entries = contexto.ChangeTracker.Entries();
+
+                var cliente = contexto.Clientes.Include(e => e.EnderecoDeEntrega).FirstOrDefault();
+
+                Console.WriteLine($"Endereço de entrega - {cliente.EnderecoDeEntrega}");
+
+                //var produto = contexto.Produtos.Include(p => p.Compras).Where(p => p.Id == 1).FirstOrDefault();
+                var produto = contexto.Produtos.Where(p => p.Id == 1).FirstOrDefault();
+                contexto.Entry(produto).Collection(c => c.Compras).Query().Where(p => p.Preco > 2).Load();
+
+                Console.WriteLine("\nCompras\n");
+                foreach (var compras in produto.Compras)
+                {
+                    Console.WriteLine(compras);
+                }
+
+                //foreach (var item in precoMaiorQue)
+                //{
+                //    Console.WriteLine(item);
+                //}
+            }
 
 
             Console.ReadKey();
